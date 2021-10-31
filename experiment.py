@@ -1,17 +1,22 @@
 import math
-import torch
+# import torch
 from torch import optim
 from models import BaseVAE
 from models.types_ import *
 from utils import data_loader
 import pytorch_lightning as pl
 from torchvision import transforms
-import torchvision.utils as vutils
+import torchvision_paddle.utils as vutils
 from torchvision.datasets import CelebA
 from torch.utils.data import DataLoader
 
+import paddle
+import paddle.optimizer as optim
+from paddle.io import DataLoader
+import paddle.vision.transforms
 
 class VAEXperiment(pl.LightningModule):
+
 
     def __init__(self,
                  vae_model: BaseVAE,
@@ -57,7 +62,7 @@ class VAEXperiment(pl.LightningModule):
         return val_loss
 
     def validation_end(self, outputs):
-        avg_loss = torch.stack([x['loss'] for x in outputs]).mean()
+        avg_loss = paddle.stack([x['loss'] for x in outputs]).mean()
         tensorboard_logs = {'avg_val_loss': avg_loss}
         self.sample_images()
         return {'val_loss': avg_loss, 'log': tensorboard_logs}
@@ -99,18 +104,21 @@ class VAEXperiment(pl.LightningModule):
         optims = []
         scheds = []
 
-        optimizer = optim.Adam(self.model.parameters(),
-                               lr=self.params['LR'],
+        # optimizer = optim.Adam(self.model.parameters(),
+        #                        learning_rate=self.params['LR'],
+        #                        weight_decay=self.params['weight_decay'])
+        optimizer = optim.Adam(parameters=self.model.parameters(),
+                               learning_rate=0.005,
                                weight_decay=self.params['weight_decay'])
         optims.append(optimizer)
         # Check if more than 1 optimizer is required (Used for adversarial training)
-        try:
-            if self.params['LR_2'] is not None:
-                optimizer2 = optim.Adam(getattr(self.model, self.params['submodel']).parameters(),
-                                        lr=self.params['LR_2'])
-                optims.append(optimizer2)
-        except:
-            pass
+        # try:
+        #     if self.params['LR_2'] is not None:
+        #         optimizer2 = optim.Adam(getattr(self.model, self.params['submodel']).parameters(),
+        #                                 learning_rate=self.params['LR_2'])
+        #         optims.append(optimizer2)
+        # except:
+        #     pass
 
         try:
             if self.params['scheduler_gamma'] is not None:
@@ -121,7 +129,9 @@ class VAEXperiment(pl.LightningModule):
                 # Check if another scheduler is required for the second optimizer
                 try:
                     if self.params['scheduler_gamma_2'] is not None:
-                        scheduler2 = optim.lr_scheduler.ExponentialLR(optims[1],
+                        # scheduler2 = optim.lr_scheduler.ExponentialLR(optims[1],
+                        #                                               gamma=self.params['scheduler_gamma_2'])
+                        scheduler2 = optim.lr.ExponentialDecay(optims[1],
                                                                       gamma=self.params['scheduler_gamma_2'])
                         scheds.append(scheduler2)
                 except:

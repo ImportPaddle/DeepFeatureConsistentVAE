@@ -1,8 +1,9 @@
 from .types_ import *
-from torch import nn
+# from torch import nn
 from abc import abstractmethod
+import paddle.nn as nn
 
-class BaseVAE(nn.Module):
+class BaseVAE(nn.Layer):
     
     def __init__(self) -> None:
         super(BaseVAE, self).__init__()

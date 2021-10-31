@@ -1,9 +1,13 @@
-import torch
+# import torch
 from models import BaseVAE
-from torch import nn
-from torchvision.models import vgg19_bn
-from torch.nn import functional as F
+# from torch import nn
+# from torchvision.models import vgg19_bn
+# from torch.nn import functional as F
 from .types_ import *
+import paddle
+import paddle.nn as nn
+import paddle.nn.functional as F
+from paddle.vision.models import vgg19
 
 
 class DFCVAE(BaseVAE):
@@ -29,63 +33,64 @@ class DFCVAE(BaseVAE):
         for h_dim in hidden_dims:
             modules.append(
                 nn.Sequential(
-                    nn.Conv2d(in_channels, out_channels=h_dim,
+                    nn.Conv2D(in_channels, out_channels=h_dim,
                               kernel_size= 3, stride= 2, padding  = 1),
-                    nn.BatchNorm2d(h_dim),
+                    nn.BatchNorm2D(h_dim),
                     nn.LeakyReLU())
             )
             in_channels = h_dim
 
         self.encoder = nn.Sequential(*modules)
-        self.fc_mu = nn.Linear(hidden_dims[-1]*4, latent_dim)
-        self.fc_var = nn.Linear(hidden_dims[-1]*4, latent_dim)
-
+        # self.fc_mu = nn.Linear(hidden_dims[-1]*4, latent_dim)
+        # self.fc_var = nn.Linear(hidden_dims[-1]*4, latent_dim)
+        self.fc_mu = nn.Linear(hidden_dims[-1] * 4, latent_dim, bias_attr=True)
+        self.fc_var = nn.Linear(hidden_dims[-1] * 4, latent_dim, bias_attr=True)
 
         # Build Decoder
         modules = []
 
-        self.decoder_input = nn.Linear(latent_dim, hidden_dims[-1] * 4)
+        # self.decoder_input = nn.Linear(latent_dim, hidden_dims[-1] * 4)
+        self.decoder_input = nn.Linear(latent_dim, hidden_dims[-1] * 4, bias_attr=True)
 
         hidden_dims.reverse()
 
         for i in range(len(hidden_dims) - 1):
             modules.append(
                 nn.Sequential(
-                    nn.ConvTranspose2d(hidden_dims[i],
+                    nn.Conv2DTranspose(hidden_dims[i],
                                        hidden_dims[i + 1],
                                        kernel_size=3,
                                        stride = 2,
                                        padding=1,
-                                       output_padding=1),
-                    nn.BatchNorm2d(hidden_dims[i + 1]),
+                                       output_padding=1,
+                                       bias_attr=True),
+                    nn.BatchNorm2D(hidden_dims[i + 1]),
                     nn.LeakyReLU())
             )
-
-
 
         self.decoder = nn.Sequential(*modules)
 
         self.final_layer = nn.Sequential(
-                            nn.ConvTranspose2d(hidden_dims[-1],
+                            nn.Conv2DTranspose(hidden_dims[-1],
                                                hidden_dims[-1],
                                                kernel_size=3,
                                                stride=2,
                                                padding=1,
-                                               output_padding=1),
-                            nn.BatchNorm2d(hidden_dims[-1]),
+                                               output_padding=1,
+                                               bias_attr=True),
+                            nn.BatchNorm2D(hidden_dims[-1]),
                             nn.LeakyReLU(),
-                            nn.Conv2d(hidden_dims[-1], out_channels= 3,
+                            nn.Conv2D(hidden_dims[-1], out_channels= 3,
                                       kernel_size= 3, padding= 1),
                             nn.Tanh())
 
-        self.feature_network = vgg19_bn(pretrained=False)
+        self.feature_network = vgg19(batch_norm=True, pretrained=False)
 
         # Freeze the pretrained feature network
         for param in self.feature_network.parameters():
             param.requires_grad = False
 
         self.feature_network.eval()
-
 
     def encode(self, input: Tensor) -> List[Tensor]:
         """
@@ -95,7 +100,7 @@ class DFCVAE(BaseVAE):
         :return: (Tensor) List of latent codes
         """
         result = self.encoder(input)
-        result = torch.flatten(result, start_dim=1)
+        result = paddle.flatten(result, start_axis=1)
 
         # Split the result into mu and var components
         # of the latent Gaussian distribution
@@ -112,7 +117,8 @@ class DFCVAE(BaseVAE):
         :return: (Tensor) [B x C x H x W]
         """
         result = self.decoder_input(z)
-        result = result.view(-1, 512, 2, 2)
+        # result = result.view(-1, 512, 2, 2)
+        result = paddle.reshape(result,[-1, 512, 2, 2])#todo   view>reshape
         result = self.decoder(result)
         result = self.final_layer(result)
         return result
@@ -125,8 +131,9 @@ class DFCVAE(BaseVAE):
         :param logvar: (Tensor) Standard deviation of the latent Gaussian [B x D]
         :return: (Tensor) [B x D]
         """
-        std = torch.exp(0.5 * logvar)
-        eps = torch.randn_like(std)
+        std = paddle.exp(0.5 * logvar)
+        # eps = torch.randn_like(std)
+        eps = paddle.randn(std.shape)
         return eps * std + mu
 
     def forward(self, input: Tensor, **kwargs) -> List[Tensor]:
@@ -153,9 +160,9 @@ class DFCVAE(BaseVAE):
             feature_layers = ['14', '24', '34', '43']
         features = []
         result = input
-        for (key, module) in self.feature_network.features._modules.items():
+        for (key, module) in self.feature_network.features._sub_layers.items():#todo  _modules>_sub_layers
             result = module(result)
-            if(key in feature_layers):
+            if key in feature_layers: #TODO  delete ()
                 features.append(result)
 
         return features
@@ -184,7 +191,7 @@ class DFCVAE(BaseVAE):
         for (r, i) in zip(recons_features, input_features):
             feature_loss += F.mse_loss(r, i)
 
-        kld_loss = torch.mean(-0.5 * torch.sum(1 + log_var - mu ** 2 - log_var.exp(), dim = 1), dim = 0)
+        kld_loss = paddle.mean(-0.5 * paddle.sum(1 + log_var - mu ** 2 - log_var.exp(), axis=1), axis=0)
 
         loss = self.beta * (recons_loss + feature_loss) + self.alpha * kld_weight * kld_loss
         return {'loss': loss, 'Reconstruction_Loss':recons_loss, 'KLD':-kld_loss}
@@ -199,8 +206,10 @@ class DFCVAE(BaseVAE):
         :param current_device: (Int) Device to run the model
         :return: (Tensor)
         """
-        z = torch.randn(num_samples,
+        z = paddle.randn(num_samples,
                         self.latent_dim)
+        # z = torch.randn(num_samples,
+        #                 self.latent_dim)
 
         z = z.to(current_device)
 

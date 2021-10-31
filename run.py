@@ -7,7 +7,7 @@ from experiment import VAEXperiment
 import torch.backends.cudnn as cudnn
 from pytorch_lightning import Trainer
 from pytorch_lightning.logging import TestTubeLogger
-
+import paddle
 
 parser = argparse.ArgumentParser(description='Generic runner for VAE models')
 parser.add_argument('--config',  '-c',
@@ -32,7 +32,7 @@ tt_logger = TestTubeLogger(
 )
 
 # For reproducibility
-torch.manual_seed(config['logging_params']['manual_seed'])
+paddle.seed(config['logging_params']['manual_seed'])
 np.random.seed(config['logging_params']['manual_seed'])
 cudnn.deterministic = True
 cudnn.benchmark = False
@@ -45,8 +45,8 @@ runner = Trainer(default_save_path="{}".format(tt_logger.save_dir),
                  min_nb_epochs=1,
                  logger=tt_logger,
                  log_save_interval=100,
-                 train_percent_check=1.,
-                 val_percent_check=1.,
+                 train_percent_check=1,#todo .
+                 val_percent_check=1,#todo .
                  num_sanity_val_steps=5,
                  early_stop_callback = False,
                  **config['trainer_params'])
