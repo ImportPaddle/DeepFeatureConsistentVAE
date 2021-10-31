@@ -154,7 +154,7 @@ class MIWAE(BaseVAE):
 
         kld_loss = -0.5 * torch.sum(1 + log_var - mu ** 2 - log_var.exp(), dim=3) # [B x M x S]
         # Get importance weights
-        log_weight = (log_p_x_z + kld_weight * kld_loss) #.detach().data
+        log_weight = (log_p_x_z + kld_weight * kld_loss) #.detach().dataset
 
         # Rescale the weights (along the sample dim) to lie in [0, 1] and sum to 1
         weight = F.softmax(log_weight, dim = -1)  # [B x M x S]

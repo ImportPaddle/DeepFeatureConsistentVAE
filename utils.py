@@ -8,7 +8,7 @@ import pytorch_lightning as pl
 def data_loader(fn):
     """
     Decorator to handle the deprecation of data_loader from 0.7
-    :param fn: User defined data loader function
+    :param fn: User defined dataset loader function
     :return: A wrapper for the data_loader function
     """
 

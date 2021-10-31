@@ -78,7 +78,7 @@ class DFCVAE(BaseVAE):
                                       kernel_size= 3, padding= 1),
                             nn.Tanh())
 
-        self.feature_network = vgg19_bn(pretrained=True)
+        self.feature_network = vgg19_bn(pretrained=False)
 
         # Freeze the pretrained feature network
         for param in self.feature_network.parameters():

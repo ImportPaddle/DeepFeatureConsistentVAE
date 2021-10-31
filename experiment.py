@@ -30,29 +30,29 @@ class VAEXperiment(pl.LightningModule):
     def forward(self, input: Tensor, **kwargs) -> Tensor:
         return self.model(input, **kwargs)
 
-    def training_step(self, batch, batch_idx, optimizer_idx = 0):
+    def training_step(self, batch, batch_idx, optimizer_idx=0):
         real_img, labels = batch
         self.curr_device = real_img.device
 
-        results = self.forward(real_img, labels = labels)
+        results = self.forward(real_img, labels=labels)
         train_loss = self.model.loss_function(*results,
-                                              M_N = self.params['batch_size']/ self.num_train_imgs,
+                                              M_N=self.params['batch_size'] / self.num_train_imgs,
                                               optimizer_idx=optimizer_idx,
-                                              batch_idx = batch_idx)
+                                              batch_idx=batch_idx)
 
         self.logger.experiment.log({key: val.item() for key, val in train_loss.items()})
 
         return train_loss
 
-    def validation_step(self, batch, batch_idx, optimizer_idx = 0):
+    def validation_step(self, batch, batch_idx, optimizer_idx=0):
         real_img, labels = batch
         self.curr_device = real_img.device
 
-        results = self.forward(real_img, labels = labels)
+        results = self.forward(real_img, labels=labels)
         val_loss = self.model.loss_function(*results,
-                                            M_N = self.params['batch_size']/ self.num_val_imgs,
-                                            optimizer_idx = optimizer_idx,
-                                            batch_idx = batch_idx)
+                                            M_N=self.params['batch_size'] / self.num_val_imgs,
+                                            optimizer_idx=optimizer_idx,
+                                            batch_idx=batch_idx)
 
         return val_loss
 
@@ -67,14 +67,14 @@ class VAEXperiment(pl.LightningModule):
         test_input, test_label = next(iter(self.sample_dataloader))
         test_input = test_input.to(self.curr_device)
         test_label = test_label.to(self.curr_device)
-        recons = self.model.generate(test_input, labels = test_label)
+        recons = self.model.generate(test_input, labels=test_label)
         vutils.save_image(recons.data,
                           f"{self.logger.save_dir}{self.logger.name}/version_{self.logger.version}/"
                           f"recons_{self.logger.name}_{self.current_epoch}.png",
                           normalize=True,
                           nrow=12)
 
-        # vutils.save_image(test_input.data,
+        # vutils.save_image(test_input.dataset,
         #                   f"{self.logger.save_dir}{self.logger.name}/version_{self.logger.version}/"
         #                   f"real_img_{self.logger.name}_{self.current_epoch}.png",
         #                   normalize=True,
@@ -83,7 +83,7 @@ class VAEXperiment(pl.LightningModule):
         try:
             samples = self.model.sample(144,
                                         self.curr_device,
-                                        labels = test_label)
+                                        labels=test_label)
             vutils.save_image(samples.cpu().data,
                               f"{self.logger.save_dir}{self.logger.name}/version_{self.logger.version}/"
                               f"{self.logger.name}_{self.current_epoch}.png",
@@ -92,9 +92,7 @@ class VAEXperiment(pl.LightningModule):
         except:
             pass
 
-
-        del test_input, recons #, samples
-
+        del test_input, recons  # , samples
 
     def configure_optimizers(self):
 
@@ -108,7 +106,7 @@ class VAEXperiment(pl.LightningModule):
         # Check if more than 1 optimizer is required (Used for adversarial training)
         try:
             if self.params['LR_2'] is not None:
-                optimizer2 = optim.Adam(getattr(self.model,self.params['submodel']).parameters(),
+                optimizer2 = optim.Adam(getattr(self.model, self.params['submodel']).parameters(),
                                         lr=self.params['LR_2'])
                 optims.append(optimizer2)
         except:
@@ -117,14 +115,14 @@ class VAEXperiment(pl.LightningModule):
         try:
             if self.params['scheduler_gamma'] is not None:
                 scheduler = optim.lr_scheduler.ExponentialLR(optims[0],
-                                                             gamma = self.params['scheduler_gamma'])
+                                                             gamma=self.params['scheduler_gamma'])
                 scheds.append(scheduler)
 
                 # Check if another scheduler is required for the second optimizer
                 try:
                     if self.params['scheduler_gamma_2'] is not None:
                         scheduler2 = optim.lr_scheduler.ExponentialLR(optims[1],
-                                                                      gamma = self.params['scheduler_gamma_2'])
+                                                                      gamma=self.params['scheduler_gamma_2'])
                         scheds.append(scheduler2)
                 except:
                     pass
@@ -135,10 +133,9 @@ class VAEXperiment(pl.LightningModule):
     @data_loader
     def train_dataloader(self):
         transform = self.data_transforms()
-
         if self.params['dataset'] == 'celeba':
-            dataset = CelebA(root = self.params['data_path'],
-                             split = "train",
+            dataset = CelebA(root=self.params['data_path'],
+                             split="train",
                              transform=transform,
                              download=False)
         else:
@@ -146,8 +143,8 @@ class VAEXperiment(pl.LightningModule):
 
         self.num_train_imgs = len(dataset)
         return DataLoader(dataset,
-                          batch_size= self.params['batch_size'],
-                          shuffle = True,
+                          batch_size=self.params['batch_size'],
+                          shuffle=True,
                           drop_last=True)
 
     @data_loader
@@ -155,13 +152,13 @@ class VAEXperiment(pl.LightningModule):
         transform = self.data_transforms()
 
         if self.params['dataset'] == 'celeba':
-            self.sample_dataloader =  DataLoader(CelebA(root = self.params['data_path'],
-                                                        split = "test",
-                                                        transform=transform,
-                                                        download=False),
-                                                 batch_size= 144,
-                                                 shuffle = True,
-                                                 drop_last=True)
+            self.sample_dataloader = DataLoader(CelebA(root=self.params['data_path'],
+                                                       split="test",
+                                                       transform=transform,
+                                                       download=False),
+                                                batch_size=144,
+                                                shuffle=True,
+                                                drop_last=True)
             self.num_val_imgs = len(self.sample_dataloader)
         else:
             raise ValueError('Undefined dataset type')
@@ -171,8 +168,7 @@ class VAEXperiment(pl.LightningModule):
     def data_transforms(self):
 
         SetRange = transforms.Lambda(lambda X: 2 * X - 1.)
-        SetScale = transforms.Lambda(lambda X: X/X.sum(0).expand_as(X))
-
+        SetScale = transforms.Lambda(lambda X: X / X.sum(0).expand_as(X))
         if self.params['dataset'] == 'celeba':
             transform = transforms.Compose([transforms.RandomHorizontalFlip(),
                                             transforms.CenterCrop(148),
@@ -182,4 +178,3 @@ class VAEXperiment(pl.LightningModule):
         else:
             raise ValueError('Undefined dataset type')
         return transform
-
