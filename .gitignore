@@ -4,8 +4,10 @@ dataset/
 logs/
 venv/
 VanillaVAE/version_0/
-
+pretrained/
+*.pdparams
+assets/
 __pycache__/
 .ipynb_checkpoints/
-
+*.pyc
 Run.ipynb
