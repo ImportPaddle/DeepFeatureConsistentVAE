@@ -1,4 +1,4 @@
-from .types_ import *
+from types_ import *
 # from torch import nn
 from abc import abstractmethod
 import paddle.nn as nn

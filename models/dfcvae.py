@@ -1,9 +1,9 @@
 # import torch
-from models import BaseVAE
+from base import BaseVAE
 # from torch import nn
 # from torchvision.models import vgg19_bn
 # from torch.nn import functional as F
-from .types_ import *
+from types_ import *
 import paddle
 import paddle.nn as nn
 import paddle.nn.functional as F
@@ -224,3 +224,6 @@ class DFCVAE(BaseVAE):
         """
 
         return self.forward(x)[0]
+if __name__=="__main__":
+    models = DFCVAE(in_channels=3,latent_dim=128)
+    paddle.summary(models,(2,3,64,64))
