@@ -1,0 +1,164 @@
+   Layer (type)         Input Shape          Output Shape         Param #
+===============================================================================
+     Conv2D-1        [[144, 3, 64, 64]]   [144, 64, 64, 64]        1,792
+   BatchNorm2D-1    [[144, 64, 64, 64]]   [144, 64, 64, 64]         256
+      ReLU-1        [[144, 64, 64, 64]]   [144, 64, 64, 64]          0
+     Conv2D-2       [[144, 64, 64, 64]]   [144, 64, 64, 64]       36,928
+   BatchNorm2D-2    [[144, 64, 64, 64]]   [144, 64, 64, 64]         256
+      ReLU-2        [[144, 64, 64, 64]]   [144, 64, 64, 64]          0
+    MaxPool2D-1     [[144, 64, 64, 64]]   [144, 64, 32, 32]          0
+     Conv2D-3       [[144, 64, 32, 32]]   [144, 128, 32, 32]      73,856
+   BatchNorm2D-3    [[144, 128, 32, 32]]  [144, 128, 32, 32]        512
+      ReLU-3        [[144, 128, 32, 32]]  [144, 128, 32, 32]         0
+     Conv2D-4       [[144, 128, 32, 32]]  [144, 128, 32, 32]      147,584
+   BatchNorm2D-4    [[144, 128, 32, 32]]  [144, 128, 32, 32]        512
+      ReLU-4        [[144, 128, 32, 32]]  [144, 128, 32, 32]         0
+    MaxPool2D-2     [[144, 128, 32, 32]]  [144, 128, 16, 16]         0
+     Conv2D-5       [[144, 128, 16, 16]]  [144, 256, 16, 16]      295,168
+   BatchNorm2D-5    [[144, 256, 16, 16]]  [144, 256, 16, 16]       1,024
+      ReLU-5        [[144, 256, 16, 16]]  [144, 256, 16, 16]         0
+     Conv2D-6       [[144, 256, 16, 16]]  [144, 256, 16, 16]      590,080
+   BatchNorm2D-6    [[144, 256, 16, 16]]  [144, 256, 16, 16]       1,024
+      ReLU-6        [[144, 256, 16, 16]]  [144, 256, 16, 16]         0
+     Conv2D-7       [[144, 256, 16, 16]]  [144, 256, 16, 16]      590,080
+   BatchNorm2D-7    [[144, 256, 16, 16]]  [144, 256, 16, 16]       1,024
+      ReLU-7        [[144, 256, 16, 16]]  [144, 256, 16, 16]         0
+     Conv2D-8       [[144, 256, 16, 16]]  [144, 256, 16, 16]      590,080
+   BatchNorm2D-8    [[144, 256, 16, 16]]  [144, 256, 16, 16]       1,024
+      ReLU-8        [[144, 256, 16, 16]]  [144, 256, 16, 16]         0
+    MaxPool2D-3     [[144, 256, 16, 16]]   [144, 256, 8, 8]          0
+     Conv2D-9        [[144, 256, 8, 8]]    [144, 512, 8, 8]      1,180,160
+   BatchNorm2D-9     [[144, 512, 8, 8]]    [144, 512, 8, 8]        2,048
+      ReLU-9         [[144, 512, 8, 8]]    [144, 512, 8, 8]          0
+     Conv2D-10       [[144, 512, 8, 8]]    [144, 512, 8, 8]      2,359,808
+  BatchNorm2D-10     [[144, 512, 8, 8]]    [144, 512, 8, 8]        2,048
+      ReLU-10        [[144, 512, 8, 8]]    [144, 512, 8, 8]          0
+     Conv2D-11       [[144, 512, 8, 8]]    [144, 512, 8, 8]      2,359,808
+  BatchNorm2D-11     [[144, 512, 8, 8]]    [144, 512, 8, 8]        2,048
+      ReLU-11        [[144, 512, 8, 8]]    [144, 512, 8, 8]          0
+     Conv2D-12       [[144, 512, 8, 8]]    [144, 512, 8, 8]      2,359,808
+  BatchNorm2D-12     [[144, 512, 8, 8]]    [144, 512, 8, 8]        2,048
+      ReLU-12        [[144, 512, 8, 8]]    [144, 512, 8, 8]          0
+    MaxPool2D-4      [[144, 512, 8, 8]]    [144, 512, 4, 4]          0
+     Conv2D-13       [[144, 512, 4, 4]]    [144, 512, 4, 4]      2,359,808
+  BatchNorm2D-13     [[144, 512, 4, 4]]    [144, 512, 4, 4]        2,048
+      ReLU-13        [[144, 512, 4, 4]]    [144, 512, 4, 4]          0
+     Conv2D-14       [[144, 512, 4, 4]]    [144, 512, 4, 4]      2,359,808
+  BatchNorm2D-14     [[144, 512, 4, 4]]    [144, 512, 4, 4]        2,048
+      ReLU-14        [[144, 512, 4, 4]]    [144, 512, 4, 4]          0
+     Conv2D-15       [[144, 512, 4, 4]]    [144, 512, 4, 4]      2,359,808
+  BatchNorm2D-15     [[144, 512, 4, 4]]    [144, 512, 4, 4]        2,048
+      ReLU-15        [[144, 512, 4, 4]]    [144, 512, 4, 4]          0
+     Conv2D-16       [[144, 512, 4, 4]]    [144, 512, 4, 4]      2,359,808
+  BatchNorm2D-16     [[144, 512, 4, 4]]    [144, 512, 4, 4]        2,048
+      ReLU-16        [[144, 512, 4, 4]]    [144, 512, 4, 4]          0
+    MaxPool2D-5      [[144, 512, 4, 4]]    [144, 512, 2, 2]          0
+AdaptiveAvgPool2D-1  [[144, 512, 2, 2]]    [144, 512, 7, 7]          0
+     Linear-1          [[144, 25088]]        [144, 4096]        102,764,544
+      ReLU-17          [[144, 4096]]         [144, 4096]             0
+     Dropout-1         [[144, 4096]]         [144, 4096]             0
+     Linear-2          [[144, 4096]]         [144, 4096]        16,781,312
+      ReLU-18          [[144, 4096]]         [144, 4096]             0
+     Dropout-2         [[144, 4096]]         [144, 4096]             0
+     Linear-3          [[144, 4096]]         [144, 1000]         4,097,000 features.0.weight	(64, 3, 3, 3)
+features.0.bias	(64,)
+features.1.weight	(64,)
+features.1.bias	(64,)
+features.1.running_mean	(64,)
+features.1.running_var	(64,)
+features.3.weight	(64, 64, 3, 3)
+features.3.bias	(64,)
+features.4.weight	(64,)
+features.4.bias	(64,)
+features.4.running_mean	(64,)
+features.4.running_var	(64,)
+features.7.weight	(128, 64, 3, 3)
+features.7.bias	(128,)
+features.8.weight	(128,)
+features.8.bias	(128,)
+features.8.running_mean	(128,)
+features.8.running_var	(128,)
+features.10.weight	(128, 128, 3, 3)
+features.10.bias	(128,)
+features.11.weight	(128,)
+features.11.bias	(128,)
+features.11.running_mean	(128,)
+features.11.running_var	(128,)
+features.14.weight	(256, 128, 3, 3)
+features.14.bias	(256,)
+features.15.weight	(256,)
+features.15.bias	(256,)
+features.15.running_mean	(256,)
+features.15.running_var	(256,)
+features.17.weight	(256, 256, 3, 3)
+features.17.bias	(256,)
+features.18.weight	(256,)
+features.18.bias	(256,)
+features.18.running_mean	(256,)
+features.18.running_var	(256,)
+features.20.weight	(256, 256, 3, 3)
+features.20.bias	(256,)
+features.21.weight	(256,)
+features.21.bias	(256,)
+features.21.running_mean	(256,)
+features.21.running_var	(256,)
+features.23.weight	(256, 256, 3, 3)
+features.23.bias	(256,)
+features.24.weight	(256,)
+features.24.bias	(256,)
+features.24.running_mean	(256,)
+features.24.running_var	(256,)
+features.27.weight	(512, 256, 3, 3)
+features.27.bias	(512,)
+features.28.weight	(512,)
+features.28.bias	(512,)
+features.28.running_mean	(512,)
+features.28.running_var	(512,)
+features.30.weight	(512, 512, 3, 3)
+features.30.bias	(512,)
+features.31.weight	(512,)
+features.31.bias	(512,)
+features.31.running_mean	(512,)
+features.31.running_var	(512,)
+features.33.weight	(512, 512, 3, 3)
+features.33.bias	(512,)
+features.34.weight	(512,)
+features.34.bias	(512,)
+features.34.running_mean	(512,)
+features.34.running_var	(512,)
+features.36.weight	(512, 512, 3, 3)
+features.36.bias	(512,)
+features.37.weight	(512,)
+features.37.bias	(512,)
+features.37.running_mean	(512,)
+features.37.running_var	(512,)
+features.40.weight	(512, 512, 3, 3)
+features.40.bias	(512,)
+features.41.weight	(512,)
+features.41.bias	(512,)
+features.41.running_mean	(512,)
+features.41.running_var	(512,)
+features.43.weight	(512, 512, 3, 3)
+features.43.bias	(512,)
+features.44.weight	(512,)
+features.44.bias	(512,)
+features.44.running_mean	(512,)
+features.44.running_var	(512,)
+features.46.weight	(512, 512, 3, 3)
+features.46.bias	(512,)
+features.47.weight	(512,)
+features.47.bias	(512,)
+features.47.running_mean	(512,)
+features.47.running_var	(512,)
+features.49.weight	(512, 512, 3, 3)
+features.49.bias	(512,)
+features.50.weight	(512,)
+features.50.bias	(512,)
+features.50.running_mean	(512,)
+features.50.running_var	(512,)
+classifier.0.weight	(4096, 25088)
+classifier.0.bias	(4096,)
+classifier.3.weight	(4096, 4096)
+classifier.3.bias	(4096,)
+classifier.6.weight	(1000, 4096)
+classifier.6.bias	(1000,)
