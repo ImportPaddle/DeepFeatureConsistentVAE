@@ -40,7 +40,7 @@ vae123
 ![Reconstruct](./imgs/129000.png)
 
 vae345
-![Reconstruct](./imgs/129500.png)
+![Reconstruct](./imgs/104500vae345.png)
 
 vae123 extract the low features，clearer than vae345
 
