@@ -7,8 +7,10 @@
 Download CelebA [@AI Studio CelebA](https://aistudio.baidu.com/aistudio/datasetdetail/39207)
 and put data at ./dataset
 
-Download VGG19_bn [@torch](https://download.pytorch.org/models/vgg19_bn-c79401a0.pth)
+Download pretrained VGG19_bn [@PaddlePaddle](https://pan.baidu.com/s/1Ade548qnuefqqDTIQ1NrqA)
+(password: 25il)
 and put data at ./paddle_dfcvae/architectures/pretrained
+
 
 then 
 ```shell
@@ -58,7 +60,7 @@ vae123 extract the low features，clearer than vae345
 ## 7.Measure
 IS:
 
-|  mean    | std     |
-| ---- | ---- |
-| 1.1636 |  0.0221 |
-
+| |  mean  | std   |
+| ---- | ---- | ---- |
+|IS| 1.1636 |  0.0221 |
+|cifar10| 1.1698 |  0.0355 |

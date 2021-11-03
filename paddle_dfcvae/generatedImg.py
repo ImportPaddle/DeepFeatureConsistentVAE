@@ -48,7 +48,7 @@ def recons(expname, inter=1800):
     model.eval()
     trainDataloader, valDataloader, img_cnt, msg = get_dataloader()
 
-    saveDir = f'./tmp/reconstruct/'
+    saveDir = f'./tmp/reconstruct_{expname}/'
     # os.makedirs(saveDir,exist_ok=1)
     setdir(saveDir)
 
@@ -102,8 +102,14 @@ def generated_a_Pic(expname,inter):
         imgs = Image.fromarray(imgs)
         imgs.save(os.path.join(saveDir,f'generated_{index}.png'))
 if __name__ == '__main__':
+
+
     expname = 'vae123_conv_his_loss'
     recons(expname, inter=129600)
+
+
+    # expname = 'vae345_conv_his_loss'
+    # recons(expname, inter=127800)
     # generated(expname,129600)
     # generated_a_Pic(expname,129600)
     # generated(expname=expname, inter=27000)

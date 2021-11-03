@@ -89,7 +89,7 @@ def get_dataloader():
                      split="test",
                      transform=transform)
     trainloader = DataLoader(trainset, batch_size=144, num_workers=0, shuffle=True, drop_last=False,use_buffer_reader=True)
-    testloader = DataLoader(testset, batch_size=128, num_workers=0, shuffle=False, drop_last=False,use_buffer_reader=True)
+    testloader = DataLoader(testset, batch_size=1, num_workers=0, shuffle=False, drop_last=False,use_buffer_reader=True)
     msg = 'load dataloader success'
     return trainloader, testloader,len(trainset),msg
 
